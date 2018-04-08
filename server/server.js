@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
 try {
     server.listen(port, function () {
-        console.log('Server is up and running at port 3000.');
+        console.log(`Server is up and running at port ${port}.`);
     });
 }
 catch (e) {
