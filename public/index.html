@@ -9,17 +9,63 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="/socket.io/socket.io.js"></script>
-    <script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <style type="text/css">
+        .ownMessageStyle {
+            color: white;
+            display: block;
+            background-color: green;
+            border-radius: 5px;
+            height: 25px;
+            text-align: left;
+            list-style-type: none;
+            padding: 4px;
+            margin: 9px 0px 11px 0px;
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .parterMessageStyle {
+            color: white;
+            display: block;
+            background-color: blue;
+            border-radius: 5px;
+            height: 25px;
+            text-align: left;
+            list-style-type: none;
+            padding: 4px;
+            margin: 9px 0px 11px 0px;
+            text-align: right;
+            height: auto;
+            overflow-y: auto;
+        }
+    </style>
+    <script>       
+        const userName = '';
         var socket = io();
-        socket.on('newMessage', function (message) {
-            console.log('New Message Arrived');
-            console.log(message);
+        socket.on('newMessage', function (newMessage) {
+            // console.log('New Message Arrived ', newMessage);
+
+            if (newMessage.message == undefined) {
+                $("#messageArea ul").append("<li class='ownMessageStyle'> Say Hi </li>");
+            }
+            else {
+                $("#messageArea ul").append("<li class='parterMessageStyle' >" + newMessage.message + "</li>");
+            }
         });
 
-        socket.emit('createMessage', {
-            'from': 'Pinky Kumari',
-            'text': 'Hey, i am studying mathematics',
-            'createdAt': Date.now().toLocaleString()
+        $(document).ready(function () {
+            var userName = prompt('Please enter your user name');
+            alert(userName);
+            $("#chatForm").submit(function () {
+                event.preventDefault();
+                let text = $("#message").val();
+                $("#messageArea ul").append("<li class='ownMessageStyle'> " + text + "</li>");
+                socket.emit('createMessage', {
+                    message: text
+                });
+                $("#message").val('');
+            });
         });
 
         socket.on('connect', function () {
@@ -29,11 +75,46 @@
         socket.on('disconnect', function () {
             console.log('Disconnected from the server.');
         });
+
+        socket.on('joinWelcomeMessage', function () {
+            //console.log('New User joined');
+            $("#messageArea ul").append("<li class='parterMessageStyle'> new User Joined </li>");
+        });
+
+        socket.on('userDisconnected', function () {
+            //console.log('One User Disconnected');
+            $("#messageArea ul").append("<li class='parterMessageStyle'> One User Disconnected </li>");
+        });
+
     </script>
 </head>
 
 <body>
-    <h1>Welcome to the chat app</h1>
-</body>
 
+    <div style="height: 600px; overflow-y: auto;">
+        <table>
+            <tr style="overflow-x: auto;">
+                <td style="width: 800px; height: 600px; background-color : white; overflow-x: auto;" colspan="2" id="messageArea">
+
+                    <ul>
+
+                    </ul>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table>
+        <form id="chatForm" action="">
+            <tr>
+                <td>
+                    <input id="message" type="Text" style="height:50px; width: 650px" placeholder="Type your message here">
+                </td>
+                <td>
+                    <button type="submit" style="height:60px; width: 100px ">Send</button>
+                </td>
+            </tr>
+        </form>
+    </table>
+</body>
 </html>
