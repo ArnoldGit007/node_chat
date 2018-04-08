@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        Chat App
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        socket.on('newMessage', function (message) {
+            console.log('New Message Arrived');
+            console.log(message);
+        });
+
+        socket.emit('createMessage',{
+            'from' : 'Pinky Kumari',
+            'text' : 'Hey, i am studying mathematics',
+            'createdAt' : Date.now().toLocaleString()
+        });
+
+        socket.on('connect', function () {
+            console.log('Connected to the server.');
+        });
+
+        socket.on('disconnect', function () {
+            console.log('Disconnected from the server.');
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Welcome to the chat app</h1>
+</body>
+
+</html>
