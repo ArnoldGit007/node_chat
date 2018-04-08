@@ -16,10 +16,10 @@
             console.log(message);
         });
 
-        socket.emit('createMessage',{
-            'from' : 'Pinky Kumari',
-            'text' : 'Hey, i am studying mathematics',
-            'createdAt' : Date.now().toLocaleString()
+        socket.emit('createMessage', {
+            'from': 'Pinky Kumari',
+            'text': 'Hey, i am studying mathematics',
+            'createdAt': Date.now().toLocaleString()
         });
 
         socket.on('connect', function () {
